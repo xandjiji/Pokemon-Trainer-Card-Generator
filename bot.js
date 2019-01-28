@@ -197,6 +197,7 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
 							} if (error) {
 								console.log(error);
 								console.log('@' + trainercard.name + ' falhou');
+								data[0].composite(data[376], 0, 0);
 							}
 			                    });
 
