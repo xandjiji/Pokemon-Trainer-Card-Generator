@@ -35,6 +35,8 @@ var cities = [
 	'Viridian City',
 	'Violet City'];
 
+var emojis = [':-)', '>:-)', '<3', ';-)', ':-D', ':-*', ':-O', ':-v', 'c-:', '~(^_^)~', '(n_n)'];
+
 
 var jimps = [];
 
@@ -183,7 +185,7 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
 			               if (!error) {
 			                    //tuitando
 			                    var status = {
-							status: '@' + trainercard.name + ' here you go, ' + tweetername + '!',
+							status: '@' + trainercard.name + ' here you go, ' + tweetername + '! ' + emojis[Math.floor((Math.random() * 10))],
 							in_reply_to_status_id: tweetidstr,
 							//in_reply_to_status_id_str: tweetidstr,
 			                    media_ids: imagem.media_id_string
