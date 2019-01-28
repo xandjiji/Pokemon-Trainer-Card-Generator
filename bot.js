@@ -194,7 +194,10 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
 
 							//console.log('respondido ao ID: ' + tweetid);
 							console.log('@' + trainercard.name + ' finalizado');
-			                    }
+							} if (error) {
+								console.log(error);
+								console.log('@' + trainercard.name + ' falhou');
+							}
 			                    });
 
 			               }
