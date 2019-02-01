@@ -78,14 +78,34 @@ let horizontal = 52;
 let offset = 48;
 let regionoffset = 0;
 
+let cooldownList = [];
+
+let successCount = 0;
+let failCount = 0;
+
+let cooldownMinutes = 10;
+
+function resetCooldown(){
+	cooldownList = [];
+}
+
+setInterval(resetCooldown, cooldownMinutes * 1000 * 60);
+
 client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) {
      stream.on('data', function(tweet) {
 
-		//console.log(tweet);
+		let isOnCooldown = false;
+
+		for(var i = 0; i < cooldownList.length; i++){
+			if(tweet.user.name == cooldownList[i]){
+				isOnCooldown = true;
+			}
+		}
 
 		var tweetid = tweet.id;
 		var tweetidstr = tweet.id_str;
 		var tweetername = tweet.user.name;
+		var followcount = tweet.user.followers_count;
 
 
           var hash = sha256(tweet.user.screen_name);
@@ -105,6 +125,7 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
           	'pokemon4': '',
           	'pokemon5': '',
           	'pokemon6': ''}]
+
 
           trainercard.name		= tweet.user.screen_name;
      	trainercard.region		= regions[	(parseInt('0x' + hash.substring(0, 4)) % 2)];
@@ -182,28 +203,36 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
 
 			          client.post('media/upload', {media: imagem}, function(error, imagem, response) {
 
-			               if (!error) {
+					var timestamp = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric"});
+
+			               if (!error && isOnCooldown == false) {
 			                    //tuitando
+							cooldownList.push(tweet.user.name);
 			                    var status = {
-							status: '@' + trainercard.name + ' here you go, ' + tweetername + '! ' + emojis[Math.floor((Math.random() * 12))],
+							status: '@' + trainercard.name + ' here you go, ' + tweetername + '! ' + emojis[Math.floor((Math.random() * 13))],
 							in_reply_to_status_id: tweetidstr,
 							//in_reply_to_status_id_str: tweetidstr,
 			                    media_ids: imagem.media_id_string
 			                    }
 
 			                    client.post('statuses/update', status, function(error, tweet, response) {
-			                    if (!error) {
+								if (!error) {
+								     successCount++;
 
-							//console.log('respondido ao ID: ' + tweetid);
-							console.log('@' + trainercard.name + ' finalizado');
-							} if (error) {
-								console.log(error);
-								console.log('@' + trainercard.name + ' falhou');
-								data[0].composite(data[376], 0, 0);
-							}
+								//console.log('respondido ao ID: ' + tweetid);
+								console.log('[' + timestamp + '] @' + trainercard.name + ' finalizado (' + followcount + ' seguidores) (#' + successCount + ')');
+								} if (error) {
+								     failCount++;
+								     console.log(error);
+								     console.log('[' + timestamp + '] @' + trainercard.name + ' falhou (' + followcount + ' seguidores) (#' + failCount + ')');
+								     data[0].composite(data[376], 0, 0);
+								}
 			                    });
 
 			               }
+						if(!error && isOnCooldown == true){
+							console.log('-> [' + timestamp + '] @' + trainercard.name + ' bloqueado pelo cooldown');
+						}
 			          });
 
 
@@ -216,7 +245,8 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
      });
 
      stream.on('error', function(error) {
-          console.log('falhou');
+          console.log(error);
+		console.log('falhou');
      });
 });
 
