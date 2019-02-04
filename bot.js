@@ -190,7 +190,7 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
                // escrevendo
                Jimp.loadFont('assets/pokedex.fnt').then(font => {
                     // -12
-				var card = data[0];
+				let card = data[0];
 
                     card.print(font, 263, 30, 'IDNo. ' + trainercard.id);
                     card.print(font, 45, 72, 'NAME: ' + trainercard.name);
