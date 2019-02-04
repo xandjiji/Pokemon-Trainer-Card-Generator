@@ -190,13 +190,15 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
                // escrevendo
                Jimp.loadFont('assets/pokedex.fnt').then(font => {
                     // -12
-                    data[0].print(font, 263, 30, 'IDNo. ' + trainercard.id);
-                    data[0].print(font, 45, 72, 'NAME: ' + trainercard.name);
-                    data[0].print(font, 45, 126, trainercard.hometown + '  (' + trainercard.region + ')');
-                    data[0].print(font, 45, 158, 'MONEY: $' + trainercard.money);
-                    data[0].print(font, 45, 190, 'POKéDEX: ' + trainercard.pokedex);
+				var card = data[0];
 
-                    data[0].write('saved/' + trainercard.name + '.png', function(){
+                    card.print(font, 263, 30, 'IDNo. ' + trainercard.id);
+                    card.print(font, 45, 72, 'NAME: ' + trainercard.name);
+                    card.print(font, 45, 126, trainercard.hometown + '  (' + trainercard.region + ')');
+                    card.print(font, 45, 158, 'MONEY: $' + trainercard.money);
+                    card.print(font, 45, 190, 'POKéDEX: ' + trainercard.pokedex);
+
+                    card.write('saved/' + trainercard.name + '.png', function(){
 	                    data[0].composite(data[376], 0, 0);
 
 					var imagem = require('fs').readFileSync('saved/' + trainercard.name + '.png');
@@ -209,7 +211,7 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
 			                    //tuitando
 							cooldownList.push(tweet.user.name);
 			                    var status = {
-							status: '@' + trainercard.name + ' here you go, ' + tweetername + '! ' + emojis[Math.floor((Math.random() * 13))],
+							status: '@' + trainercard.name + ' here you go, ' + tweetername + '!',
 							in_reply_to_status_id: tweetidstr,
 							//in_reply_to_status_id_str: tweetidstr,
 			                    media_ids: imagem.media_id_string
