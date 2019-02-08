@@ -3,6 +3,8 @@
 This is the Twitter bot version of the pokehash trainer card generator. If you are looking for the web application:
 https://github.com/xandjiji/pokehash
 
+![example](https://i.imgur.com/hqBMUAG.png)
+
 ### Installation
 
   - You need [Node.js](https://nodejs.org/) to run this bot
