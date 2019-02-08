@@ -6,8 +6,8 @@ https://github.com/xandjiji/pokehash
 ### Installation
 
   - You need [Node.js](https://nodejs.org/) to run this bot
-  - You need [twitter](https://www.npmjs.com/package/twitter) package to communicate with the Twitter API
-  - You need [jimp](https://www.npmjs.com/package/jimp) package to create the trainer card images
+  - You need the [twitter](https://www.npmjs.com/package/twitter) package to communicate with the Twitter API
+  - You need the [jimp](https://www.npmjs.com/package/jimp) package to create the trainer card images
 
 Install the dependencies with:
 
