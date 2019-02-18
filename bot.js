@@ -79,9 +79,11 @@ let offset = 48;
 let regionoffset = 0;
 
 let cooldownList = [];
+let tweetQueue = [];
 
 let successCount = 0;
 let failCount = 0;
+let retries = 0;
 
 let cooldownMinutes = 10;
 
@@ -90,6 +92,7 @@ function resetCooldown(){
 }
 
 setInterval(resetCooldown, cooldownMinutes * 1000 * 60);
+setInterval(reTweet, 1000 * 60);
 
 client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) {
      stream.on('data', function(tweet) {
@@ -213,13 +216,13 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
 			                    var status = {
 							status: '@' + trainercard.name + ' here you go, ' + tweetername + '!',
 							in_reply_to_status_id: tweetidstr,
-							//in_reply_to_status_id_str: tweetidstr,
 			                    media_ids: imagem.media_id_string
 			                    }
 
 			                    client.post('statuses/update', status, function(error, tweet, response) {
 								if (!error) {
 								     successCount++;
+									//console.log(tweet);
 
 								//console.log('respondido ao ID: ' + tweetid);
 								console.log('[' + timestamp + '] @' + trainercard.name + ' finalizado (' + followcount + ' seguidores) (#' + successCount + ')');
@@ -228,6 +231,7 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
 								     console.log(error);
 								     console.log('[' + timestamp + '] @' + trainercard.name + ' falhou (' + followcount + ' seguidores) (#' + failCount + ')');
 								     data[0].composite(data[376], 0, 0);
+									tweetQueue.push(status);
 								}
 			                    });
 
@@ -350,3 +354,22 @@ var sha256 = function sha256(ascii) {
 
 	return result;
 };
+
+function reTweet(){
+
+	if(tweetQueue.length != 0){
+		client.post('statuses/update', tweetQueue[0], function(error, tweet, response) {
+			if (!error) {
+
+				successCount++;
+				console.log('[' + timestamp + '] tweet da fila feito com sucesso! Restam: ' + tweetQueue.length + ' (#' + successCount + ')');
+				tweetQueue.shift();
+
+			} if (error) {
+
+				retries++;
+
+			}
+		});
+	}
+}
