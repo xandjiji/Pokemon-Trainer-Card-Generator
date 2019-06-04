@@ -6,13 +6,14 @@ var client = new Twitter(config);
 
 var arroba = "@PokeTrainerCard";
 
+var timestamp = new Date().toLocaleTimeString('en-US', {hour12: false, hour: "numeric", minute: "numeric"});
 
-console.log("bot iniciado!");
+console.log('[' + timestamp + '] bot iniciado!');
 
 // arrays de cidade/regiao
 var regions = [
 	'Kanto',
-	'Johto'];
+    'Johto'];
 var cities = [
 	'Celadon City',
 	'Azalea Town',
@@ -44,23 +45,23 @@ var jimps = [];
 jimps.push(Jimp.read('assets/card.png'));
 
 // carregando pokemons
-for (var i = 1; i < 253; i++){
-     jimps.push(Jimp.read('assets/pokemons/pokemon' + (i-1) + '.png'));
+for (var i = 1; i < 253; i++) {
+    jimps.push(Jimp.read('assets/pokemons/pokemon' + (i-1) + '.png'));
 }
 
 // carregando insigneas (kanto)
-for (var i = 253; i < 261; i++){
-     jimps.push(Jimp.read('assets/badges/kanto/kanto' + (i-253) + '.png'));
+for (var i = 253; i < 261; i++) {
+    jimps.push(Jimp.read('assets/badges/kanto/kanto' + (i-253) + '.png'));
 }
 
 // carregando insigneas (johto)
-for (var i = 261; i < 269; i++){
-     jimps.push(Jimp.read('assets/badges/johto/johto' + (i-253) + '.png'));
+for (var i = 261; i < 269; i++) {
+    jimps.push(Jimp.read('assets/badges/johto/johto' + (i-253) + '.png'));
 }
 
 // carregando treinadores
-for (var i = 269; i < 376; i++){
-     jimps.push(Jimp.read('assets/trainers/trainer' + (i-269) + '.png'));
+for (var i = 269; i < 376; i++) {
+    jimps.push(Jimp.read('assets/trainers/trainer' + (i-269) + '.png'));
 }
 
 // salvando template
@@ -87,173 +88,175 @@ let retries = 0;
 
 let cooldownMinutes = 10;
 
-function resetCooldown(){
+function resetCooldown() {
 	cooldownList = [];
 }
 
 setInterval(resetCooldown, cooldownMinutes * 1000 * 60);
-setInterval(reTweet, 1000 * 60);
+//setInterval(reTweet, 1000 * 60);
 
 client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) {
-     stream.on('data', function(tweet) {
+    stream.on('data', function(tweet) {
 
-		let isOnCooldown = false;
+	    let isOnCooldown = false;
 
-		for(var i = 0; i < cooldownList.length; i++){
-			if(tweet.user.name == cooldownList[i]){
+		for(var i = 0; i < cooldownList.length; i++) {
+			if(tweet.user.name == cooldownList[i]) {
 				isOnCooldown = true;
 			}
 		}
 
-		var tweetid = tweet.id;
-		var tweetidstr = tweet.id_str;
-		var tweetername = tweet.user.name;
-		var followcount = tweet.user.followers_count;
+        var tweetid = tweet.id;
+        var tweetidstr = tweet.id_str;
+        var tweetername = tweet.user.name;
+        var followcount = tweet.user.followers_count;
 
 
-          var hash = sha256(tweet.user.screen_name);
+        var hash = sha256(tweet.user.screen_name);
 
-          var trainercard = [{
-          	'id': '',
-               'name': '',
-          	'region': '',
-          	'hometown': '',
-          	'money': '',
-          	'pokedex': '',
-          	'badges': '',
-          	'trainer': '',
-          	'pokemon1': '',
-          	'pokemon2': '',
-          	'pokemon3': '',
-          	'pokemon4': '',
-          	'pokemon5': '',
-          	'pokemon6': ''}]
+        var trainercard = [{
+            'id': '',
+            'name': '',
+            'region': '',
+            'hometown': '',
+            'money': '',
+            'pokedex': '',
+            'badges': '',
+            'trainer': '',
+            'pokemon1': '',
+            'pokemon2': '',
+            'pokemon3': '',
+            'pokemon4': '',
+            'pokemon5': '',
+            'pokemon6': ''}];
 
 
-          trainercard.name		= tweet.user.screen_name;
-     	trainercard.region		= regions[	(parseInt('0x' + hash.substring(0, 4)) % 2)];
-     	trainercard.hometown	= cities[		(parseInt('0x' + hash.substring(0, 4)) % 20)];
-     	trainercard.money		= 			(parseInt('0x' + hash.substring(5, 9)));
-     	trainercard.pokedex		= 			(parseInt('0x' + hash.substring(10, 14)) % 252);
-     	trainercard.badges		= 			(parseInt('0x' + hash.substring(15, 19)) % 9);
+        trainercard.name        =           tweet.user.screen_name;
+     	trainercard.region      =   regions[(parseInt('0x' + hash.substring(0, 4)) % 2)];
+     	trainercard.hometown    =   cities[	(parseInt('0x' + hash.substring(0, 4)) % 20)];
+     	trainercard.money       = 			(parseInt('0x' + hash.substring(5, 9)));
+     	trainercard.pokedex     = 			(parseInt('0x' + hash.substring(10, 14)) % 252);
+     	trainercard.badges      = 			(parseInt('0x' + hash.substring(15, 19)) % 9);
      	trainercard.trainer		= 			(parseInt('0x' + hash.substring(20, 24)) % 107);
      	trainercard.pokemon1	= 			(parseInt('0x' + hash.substring(25, 29)) % 252);
      	trainercard.pokemon2	= 			(parseInt('0x' + hash.substring(30, 34)) % 252);
      	trainercard.pokemon3	= 			(parseInt('0x' + hash.substring(35, 39)) % 252);
      	trainercard.pokemon4	= 			(parseInt('0x' + hash.substring(40, 44)) % 252);
      	trainercard.pokemon5	= 			(parseInt('0x' + hash.substring(45, 49)) % 252);
-     	trainercard.pokemon6	= 			(parseInt('0x' + hash.substring(50, 54)) % 252);
-     	trainercard.id 		= 			(parseInt('0x' + hash.substring(55, 59)));
+     	trainercard.pokemon6    = 			(parseInt('0x' + hash.substring(50, 54)) % 252);
+     	trainercard.id          =           (parseInt('0x' + hash.substring(55, 59)));
 
-          Promise.all(jimps).then(function(data) {
-               return Promise.all(jimps);
-          }).then(function(data) {
+        Promise.all(jimps).then(function(data) {
+            return Promise.all(jimps);
+        }).then(function(data) {
 
-               /*
-                    card:     0
-                    pokemons: 1-252
-                    badges:   253-268
-                    trainers: 269-375
-                    template:    376
-               */
+            /*
+                card:     0
+                pokemons: 1-252
+                badges:   253-268
+                trainers: 269-375
+                template:    376
+            */
 
-               // desenhando pokemon1
-               data[0].composite(data[1+trainercard.pokemon1], pokegridW, pokegridH);
+            // desenhando pokemon1
+            data[0].composite(data[1+trainercard.pokemon1], pokegridW, pokegridH);
 
-               // desenhando pokemon2
-               data[0].composite(data[1+trainercard.pokemon2], pokegridW + (offsetW), pokegridH);
+            // desenhando pokemon2
+            data[0].composite(data[1+trainercard.pokemon2], pokegridW + (offsetW), pokegridH);
 
-               // desenhando pokemon3
-               data[0].composite(data[1+trainercard.pokemon3], pokegridW + (offsetW*2), pokegridH);
+            // desenhando pokemon3
+            data[0].composite(data[1+trainercard.pokemon3], pokegridW + (offsetW*2), pokegridH);
 
-               // desenhando pokemon4
-               data[0].composite(data[1+trainercard.pokemon4], pokegridW, pokegridH + (offsetH));
+            // desenhando pokemon4
+            data[0].composite(data[1+trainercard.pokemon4], pokegridW, pokegridH + (offsetH));
 
-               // desenhando pokemon5
-               data[0].composite(data[1+trainercard.pokemon5], pokegridW + (offsetW), pokegridH + (offsetH));
+            // desenhando pokemon5
+            data[0].composite(data[1+trainercard.pokemon5], pokegridW + (offsetW), pokegridH + (offsetH));
 
-               // desenhando pokemon6
-               data[0].composite(data[1+trainercard.pokemon6], pokegridW + (offsetW*2), pokegridH + (offsetH));
-
-
-               // desenhando treinador
-               data[0].composite(data[269+trainercard.trainer], 260, 170);
-
-               // desenhando insigneas
-               if(trainercard.region == 'Johto'){
-                    regionoffset = 8;
-               }
-               if(trainercard.region == 'Kanto'){
-                    regionoffset = 0;
-               }
-               for(var i = 0; i < trainercard.badges; i++){
-                    data[0].composite(data[253+i+regionoffset], horizontal + (i*offset), 380);
-               }
-
-               // escrevendo
-               Jimp.loadFont('assets/pokedex.fnt').then(font => {
-                    // -12
-				let card = data[0];
-
-                    card.print(font, 263, 30, 'IDNo. ' + trainercard.id);
-                    card.print(font, 45, 72, 'NAME: ' + trainercard.name);
-                    card.print(font, 45, 126, trainercard.hometown + '  (' + trainercard.region + ')');
-                    card.print(font, 45, 158, 'MONEY: $' + trainercard.money);
-                    card.print(font, 45, 190, 'POKéDEX: ' + trainercard.pokedex);
-
-                    card.write('saved/' + trainercard.name + '.png', function(){
-	                    data[0].composite(data[376], 0, 0);
-
-					var imagem = require('fs').readFileSync('saved/' + trainercard.name + '.png');
-
-			          client.post('media/upload', {media: imagem}, function(error, imagem, response) {
-
-					var timestamp = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric"});
-
-			               if (!error && isOnCooldown == false) {
-			                    //tuitando
-							cooldownList.push(tweet.user.name);
-			                    var status = {
-							status: '@' + trainercard.name + ' here you go, ' + tweetername + '!',
-							in_reply_to_status_id: tweetidstr,
-			                    media_ids: imagem.media_id_string
-			                    }
-
-			                    client.post('statuses/update', status, function(error, tweet, response) {
-								if (!error) {
-								     successCount++;
-									//console.log(tweet);
-
-								//console.log('respondido ao ID: ' + tweetid);
-								console.log('[' + timestamp + '] @' + trainercard.name + ' finalizado (' + followcount + ' seguidores) (#' + successCount + ')');
-								} if (error) {
-								     failCount++;
-								     console.log(error);
-								     console.log('[' + timestamp + '] @' + trainercard.name + ' falhou (' + followcount + ' seguidores) (#' + failCount + ')');
-								     data[0].composite(data[376], 0, 0);
-									tweetQueue.push(status);
-								}
-			                    });
-
-			               }
-						if(!error && isOnCooldown == true){
-							console.log('-> [' + timestamp + '] @' + trainercard.name + ' bloqueado pelo cooldown');
-						}
-			          });
+            // desenhando pokemon6
+            data[0].composite(data[1+trainercard.pokemon6], pokegridW + (offsetW*2), pokegridH + (offsetH));
 
 
-				});
-               });
-          })
+            // desenhando treinador
+            data[0].composite(data[269+trainercard.trainer], 260, 170);
+
+            // desenhando insigneas
+            if(trainercard.region == 'Johto') {
+                regionoffset = 8;
+            }
+            if(trainercard.region == 'Kanto') {
+                regionoffset = 0;
+            }
+            for(var i = 0; i < trainercard.badges; i++) {
+                data[0].composite(data[253+i+regionoffset], horizontal + (i*offset), 380);
+            }
+
+            // escrevendo
+            Jimp.loadFont('assets/pokedex.fnt').then(font => {
+
+                // -12
+                let card = data[0];
+
+                card.print(font, 263, 30,   'IDNo. ' + trainercard.id);
+                card.print(font, 45, 72,    'NAME: ' + trainercard.name);
+                card.print(font, 45, 126,   trainercard.hometown + '  (' + trainercard.region + ')');
+                card.print(font, 45, 158,   'MONEY: $' + trainercard.money);
+                card.print(font, 45, 190,   'POKéDEX: ' + trainercard.pokedex);
+
+                card.write('saved/' + trainercard.name + '.png', function() {
+                    
+                    data[0].composite(data[376], 0, 0);
+
+                    var imagem = require('fs').readFileSync('saved/' + trainercard.name + '.png');
+
+                    client.post('media/upload', {media: imagem}, function(error, imagem, response) {
+
+                        var timestamp = new Date().toLocaleTimeString('en-US', {hour12: false, hour: "numeric", minute: "numeric"});
+
+                        if (!error && isOnCooldown == false) {
+
+                            //tuitando
+                            cooldownList.push(tweet.user.name);
+                            var status = {
+                                status: '@' + trainercard.name + ' here you go, ' + tweetername + '!',
+                                in_reply_to_status_id: tweetidstr,
+                                media_ids: imagem.media_id_string
+                            }
+
+                            client.post('statuses/update', status, function(error, tweet, response) {
+                                if (!error) {
+                                    successCount++;
+                                    //console.log(tweet);
+
+                                    //console.log('respondido ao ID: ' + tweetid);
+                                    console.log('[' + timestamp + '] @' + trainercard.name + ' finalizado (' + followcount + ' seguidores) (#' + successCount + ')');
+                                }
+                                if (error) {
+                                    failCount++;
+                                    console.log(error);
+                                    console.log('[' + timestamp + '] @' + trainercard.name + ' falhou (' + followcount + ' seguidores) (#' + failCount + ')');
+                                    data[0].composite(data[376], 0, 0);
+                                    tweetQueue.push(status);
+                                }
+                            });
+                        }
+                        if(!error && isOnCooldown == true) {
+                            console.log('-> [' + timestamp + '] @' + trainercard.name + ' bloqueado pelo cooldown');
+                        }
+                    });
+                });
+            });
+        })
 
 
           //tuita('@' + tweet.user.screen_name + ' here you go!');
-     });
+    });
 
-     stream.on('error', function(error) {
-          console.log(error);
-		console.log('falhou');
-     });
+    stream.on('error', function(error) {
+        console.log(error);
+        var timestamp = new Date().toLocaleTimeString('en-US', {hour12: false, hour: "numeric", minute: "numeric"});
+        console.log('[' + timestamp + '] falhou');
+    });
 });
 
 var sha256 = function sha256(ascii) {
@@ -355,20 +358,21 @@ var sha256 = function sha256(ascii) {
 	return result;
 };
 
-function reTweet(){
+function reTweet() {
 
-	if(tweetQueue.length != 0){
+	if(tweetQueue.length != 0) {
 		client.post('statuses/update', tweetQueue[0], function(error, tweet, response) {
 			if (!error) {
 
+				var timestamp2 = new Date().toLocaleTimeString('en-US', {hour12: false, hour: "numeric", minute: "numeric"});
+
 				successCount++;
-				console.log('[' + timestamp + '] tweet da fila feito com sucesso! Restam: ' + tweetQueue.length + ' (#' + successCount + ')');
+				console.log('[' + timestamp2 + '] tweet da fila feito com sucesso! Restam: ' + tweetQueue.length + ' (#' + successCount + ')');
 				tweetQueue.shift();
 
-			} if (error) {
-
-				retries++;
-
+            }
+            if (error) {
+			    retries++;
 			}
 		});
 	}
