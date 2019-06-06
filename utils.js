@@ -4,7 +4,7 @@ var utils = {}
 
 utils.regions = [
 	'Kanto',
-    'Johto'];
+	'Johto'];
 
 utils.cities = [
 	'Celadon City',
