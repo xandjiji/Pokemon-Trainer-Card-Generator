@@ -1,5 +1,6 @@
 var Twitter     = require('twitter');
 var Jimp        = require('jimp');
+var fs          = require('fs');
 var config      = require('./config');
 var utils       = require('./utils');
 
@@ -25,7 +26,10 @@ let regionoffset = 0;
 
 // arrays e contadores
 let cooldownList = [];
-let tweetQueue = [];
+var failedTweets = {
+    queue: []
+};
+carregaFailedTweets();
 
 let successCount = 0;
 let failCount = 0;
@@ -40,7 +44,7 @@ function resetCooldown() {
 }
 
 // retuita periodicamente todos os tuites que falharam (NAO TESTADO)
-/* setInterval(reTweet, 1000 * 60); */
+setInterval(reTweet, 1000 * 60);
 
 console.log(utils.timeStamp() + 'bot pronto!');
 // dispara ao capturar alguma mention
@@ -118,25 +122,25 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
                         data[0].composite(data[376], 0, 0);
 
                         // upando cartao
-                        var imagem = require('fs').readFileSync('saved/' + trainercard.name + '.png');
+                        var imagem = fs.readFileSync('saved/' + trainercard.name + '.png');
 
                         client.post('media/upload', {media: imagem}, function(error, imagem, response) {
-                            if (!error) {
+                            if(!error) {
 
                                 //tuitando
                                 var status = utils.makeTweet(tweet, imagem);
 
                                 client.post('statuses/update', status, function(error, tweeted, response) {
-                                    if (!error) {
+                                    if(!error) {
                                         successCount++;
                                         utils.successMsg(tweet, successCount);
                                         cooldownList.push(tweet.user.name);
                                     }
-                                    if (error) {
+                                    if(error) {
                                         failCount++;
                                         utils.failMsg(tweet, failCount);
                                         console.log(error);
-                                        tweetQueue.push(status);
+                                        failedTweets.queue.push(status);
                                     }
                                 });
                             }
@@ -195,18 +199,43 @@ function carregaAssets() {
 // retuita um tuite que falhou que falharam (NAO TESTADO)
 function reTweet() {
 
-	if(tweetQueue.length != 0) {
-		client.post('statuses/update', tweetQueue[0], function(error, tweet, response) {
-			if (!error) {
-
+	if(failedTweets.queue.length != 0) {
+		client.post('statuses/update', failedTweets.queue[0], function(error, tweet, response) {
+			if(!error) {
 				successCount++;
-				console.log(utils.timeStamp() + ' tweet da fila feito com sucesso! Restam: ' + tweetQueue.length + ' (#' + successCount + ')');
-				tweetQueue.shift();
-
+				console.log(utils.timeStamp() + ' tweet antigo feito com sucesso (restam: ' + failedTweets.queue.length + ') (#' + successCount + ')');
+                
+                // atualiza e salva failedTweets
+                failedTweets.queue.shift();
+                var failedTweetsStr = JSON.stringify(failedTweets);
+                fs.writeFile('failedTweets.json', failedTweetsStr);
             }
-            if (error) {
-			    retries++;
+            if(error) {
+                retries++;
+                console.log(error);                
+                console.log(utils.timeStamp() + ' tweet antigo falhou (restam: ' + failedTweets.queue.length + ') (#' + retries + ')');
 			}
 		});
 	}
+}
+
+function carregaFailedTweets() {
+
+    fs.readFile('failedTweets.json', 'utf8', function (error, jsonString) {
+        if(error) {
+            fs.writeFile('failedTweets.json', '{"queue":[]}\n');
+            console.log(error);
+            return console.log(utils.timeStamp() + ' arquivo failedTweets.json criado e inicializado corretamente');            
+        }
+        if(!error) {
+            if(jsonString == ''){
+                // inicializa corretamente o arquivo
+                fs.writeFile('failedTweets.json', '{"queue":[]}\n');
+                console.log(utils.timeStamp() + ' tweets antigos carregados (0)');
+            } else {
+                failedTweets = JSON.parse(jsonString);
+                console.log(utils.timeStamp() + ' tweets antigos carregados (' + failedTweets.queue.length + ')');
+            }
+        }
+    })
 }

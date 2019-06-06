@@ -46,7 +46,7 @@ utils.emojis = [
 /* funcoes de console.log() */
 
 utils.timeStamp = function timeStamp() {
-    var time = new Date().toLocaleTimeString('en-US', {hour12: false, hour: "numeric", minute: "numeric", second: "numeric"});
+    var time = new Date().toLocaleTimeString('en-US', {hour12: false, hour: 'numeric', minute: 'numeric', second: 'numeric'});
     return '[' + time + '] ';
 }
 
