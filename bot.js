@@ -40,7 +40,7 @@ let cooldownMinutes = 10;
 setInterval(resetCooldown, cooldownMinutes * 1000 * 60);
 function resetCooldown() {
     cooldownList = [];
-    utils.resetMsg();
+    //utils.resetMsg();
 }
 
 // retuita periodicamente todos os tuites que falharam (NAO TESTADO)
