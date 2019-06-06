@@ -203,7 +203,7 @@ function reTweet() {
 		client.post('statuses/update', failedTweets.queue[0], function(error, tweet, response) {
 			if(!error) {
 				successCount++;
-				console.log(utils.timeStamp() + ' tweet antigo feito com sucesso (restam: ' + failedTweets.queue.length + ') (#' + successCount + ')');
+				console.log(utils.timeStamp() + 'tweet antigo feito com sucesso (restam: ' + failedTweets.queue.length + ') (#' + successCount + ')');
                 
                 // atualiza e salva failedTweets
                 failedTweets.queue.shift();
@@ -213,7 +213,7 @@ function reTweet() {
             if(error) {
                 retries++;
                 console.log(error);                
-                console.log(utils.timeStamp() + ' tweet antigo falhou (restam: ' + failedTweets.queue.length + ') (#' + retries + ')');
+                console.log(utils.timeStamp() + 'tweet antigo falhou (restam: ' + failedTweets.queue.length + ') (#' + retries + ')');
 			}
 		});
 	}
@@ -225,16 +225,16 @@ function carregaFailedTweets() {
         if(error) {
             fs.writeFile('failedTweets.json', '{"queue":[]}\n');
             console.log(error);
-            return console.log(utils.timeStamp() + ' arquivo failedTweets.json criado e inicializado corretamente');            
+            return console.log(utils.timeStamp() + 'arquivo failedTweets.json criado e inicializado corretamente');            
         }
         if(!error) {
             if(jsonString == ''){
                 // inicializa corretamente o arquivo
                 fs.writeFile('failedTweets.json', '{"queue":[]}\n');
-                console.log(utils.timeStamp() + ' tweets antigos carregados (0)');
+                console.log(utils.timeStamp() + 'tweets antigos carregados (0)');
             } else {
                 failedTweets = JSON.parse(jsonString);
-                console.log(utils.timeStamp() + ' tweets antigos carregados (' + failedTweets.queue.length + ')');
+                console.log(utils.timeStamp() + 'tweets antigos carregados (' + failedTweets.queue.length + ')');
             }
         }
     })
