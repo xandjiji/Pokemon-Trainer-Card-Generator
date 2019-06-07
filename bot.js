@@ -214,6 +214,8 @@ function reTweet() {
                 retries++;
                 console.log(error);                
                 console.log(utils.timeStamp() + 'tweet antigo falhou (restam: ' + failedTweets.queue.length + ') (#' + retries + ')');
+                var failedTweetsStr = JSON.stringify(failedTweets);
+                fs.writeFile('failedTweets.json', failedTweetsStr);
 			}
 		});
 	}
