@@ -1,5 +1,5 @@
 {
-  "name": "pokehash-twitter-bot",
+  "name": "Pokemon-Trainer-Card-Generator",
   "version": "1.0.0",
   "description": "A twitter bot that automatically generates and tweets Pokémon Trainer Cards.",
   "main": "bot.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/xandjiji/pokehash-twitter-bot.git"
+    "url": "git+ssh://git@github.com/xandjiji/Pokemon-Trainer-Card-Generator.git"
   },
   "author": "xandjiji",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/xandjiji/pokehash-twitter-bot/issues"
+    "url": "https://github.com/xandjiji/Pokemon-Trainer-Card-Generator/issues"
   },
-  "homepage": "https://github.com/xandjiji/pokehash-twitter-bot#readme",
+  "homepage": "https://github.com/xandjiji/Pokemon-Trainer-Card-Generatort#readme",
   "dependencies": {
     "jimp": "^0.6.0",
     "twitter": "^1.7.1"
