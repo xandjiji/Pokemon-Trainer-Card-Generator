@@ -1,10 +1,15 @@
 # Pokemon Trainer Card Generator
 
-This is the Twitter bot version of the pokehash trainer card generator. If you are looking for the web application:
-https://github.com/xandjiji/pokehash
+This is the Twitter bot version of the pokehash trainer card generator. You can find the web application [here](https://github.com/xandjiji/pokehash).
 
 <p align="center">
   <img src="https://i.imgur.com/hqBMUAG.png">
+</p>
+
+Now with beautiful logging!
+
+<p align="center">
+  <img src="https://i.imgur.com/pDtW5d4.png">
 </p>
 
 ### Installation
