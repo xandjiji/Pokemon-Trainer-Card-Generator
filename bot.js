@@ -171,7 +171,7 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
 // carrega os assets
 function loadAssets() {
 
-    loadingAssetsMsg();
+    logging.loadingAssetsMsg();
 
     // carregando cartao
     jimps.push(Jimp.read('assets/card.png'));
