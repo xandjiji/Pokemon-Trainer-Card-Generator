@@ -51,7 +51,7 @@ logging.zeroTweetsLoadedMsg = function zeroTweetsLoaded() {
     
     let msg =
         `${logging.colors.magenta}${logging.timeStamp()}` +
-        `${logging.colors.reset}the tweet queue was loaded from the ${logging.colors.magenta}failedTweets.json${logging.colors.reset} file. [0]${logging.colors.reset}`;
+        `${logging.colors.reset}the tweet queue was loaded from the ${logging.colors.magenta}failedTweets.json${logging.colors.reset} file. ${logging.colors.magenta}[0]${logging.colors.reset}`;
 
     return console.log(msg);
 }
@@ -60,7 +60,7 @@ logging.tweetsLoadedMsg = function zeroTweetsLoaded(size) {
     
     let msg =
         `${logging.colors.magenta}${logging.timeStamp()}` +
-        `${logging.colors.reset}the tweet queue was loaded from the ${logging.colors.magenta}failedTweets.json${logging.colors.reset} file. [${size}]${logging.colors.reset}`;
+        `${logging.colors.reset}the tweet queue was loaded from the ${logging.colors.magenta}failedTweets.json${logging.colors.reset} file. ${logging.colors.magenta}[${size}]${logging.colors.reset}`;
 
     return console.log(msg);
 }
