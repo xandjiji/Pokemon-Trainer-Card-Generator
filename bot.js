@@ -46,7 +46,7 @@ function resetCooldown() {
 }
 
 // tweets periodically a tweet that failed before
-setInterval(reTweet, 1000 * 60);
+setInterval(reTweet, 1000 * 30);
 
 
 
