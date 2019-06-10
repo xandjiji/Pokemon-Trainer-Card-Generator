@@ -1,7 +1,5 @@
 var utils = {}
 
-/* arrays de cidade/regiao/emoji */
-
 utils.regions = [
 	'Kanto',
 	'Johto'];
@@ -27,66 +25,6 @@ utils.cities = [
 	'Olivine City',
 	'Viridian City',
 	'Violet City'];
-
-utils.emojis = [
-    ':-)',
-    '>:-)',
-    '<3',
-    ';-)',
-    ':-D',
-    ':-*',
-    ':-O',
-    ':-v',
-    'c-:',
-    '~(^_^)~',
-    '(n_n)',
-    ':-P',
-    ':^)'];
-
-/* funcoes de console.log() */
-
-utils.timeStamp = function timeStamp() {
-    var time = new Date().toLocaleTimeString('en-US', {hour12: false, hour: 'numeric', minute: 'numeric', second: 'numeric'});
-    return '[' + time + '] ';
-}
-
-utils.successMsg = function successMsg(tweet, successCount) {
-    
-    var msg =   utils.timeStamp() +
-                '@' + tweet.user.screen_name + ' finalizado ' +
-                '(' + tweet.user.followers_count + ' seguidores) ' + 
-                '(#' + successCount + ')';
-
-    return console.log(msg);
-}
-
-utils.failMsg = function failMsg(tweet, failCount) {
-    
-    var msg =   utils.timeStamp() +
-                '@' + tweet.user.screen_name + ' falhou ' +
-                '(' + tweet.user.followers_count + ' seguidores) ' +
-                '(#' + failCount + ')';
-
-    return console.log(msg);
-}
-
-utils.cooldownMsg = function cooldownMsg(tweet) {
-
-    var msg =   '-> ' + utils.timeStamp() +
-                '@' + tweet.user.screen_name + ' bloqueado pelo cooldown';
-
-    return console.log(msg);
-}
-
-utils.resetMsg = function resetMsg() {
-
-    var msg =   utils.timeStamp() +
-                'lista de cooldown resetada';
-
-    return console.log(msg);    
-}
-
-/* funcoes de montar tuite e trainercard */
 
 utils.makeTrainercard = function makeTrainercard(screen_name) {
 
@@ -123,8 +61,6 @@ utils.makeTweet = function makeTweet(tweet, imagem) {
     return composedTweet;
 
 }
-
-/* implementacao de sha256 */
 
 utils.sha256 = function sha256(ascii) {
     function rightRotate(value, amount) {

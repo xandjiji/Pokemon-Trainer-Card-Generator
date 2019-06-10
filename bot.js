@@ -1,60 +1,64 @@
 var Twitter     = require('twitter');
 var Jimp        = require('jimp');
 var fs          = require('fs');
-var config      = require('./config');
+
+var keys        = require('./keys.env');
 var utils       = require('./utils');
+var logging     = require('./logging');
 
-var client = new Twitter(config);
+var client = new Twitter(keys);
 
-console.log(utils.timeStamp() + 'bot iniciando...');
+logging.startupMsg();
 
-// carrega os assets em jimps[]
+// load assets into jimps[]
 var jimps = [];
-carregaAssets();
+loadAssets();
 
-// posicoes relativas grid de pokemons
+// relative positions in the pokemon grid
 let pokegridW = 28;
 let pokegridH = 222;
 
 let offsetW = 84;
 let offsetH = 68;
 
-// posicoes relativas grid de insigneas
+// relative positions in the badge grid
 let horizontal = 52;
 let offset = 48;
 let regionoffset = 0;
 
-// arrays e contadores
+// arrays and counters
 let cooldownList = [];
 var failedTweets = {
     queue: []
 };
-carregaFailedTweets();
+loadFailedTweets();
 
 let successCount = 0;
 let failCount = 0;
 let retries = 0;
 let cooldownMinutes = 10;
 
-// reseta a lista de cooldown a cada 10 minutos
+// reset the cooldown list every 10 minutes
 setInterval(resetCooldown, cooldownMinutes * 1000 * 60);
 function resetCooldown() {
     cooldownList = [];
-    //utils.resetMsg();
+    logging.resetMsg();
 }
 
-// retuita periodicamente todos os tuites que falharam (NAO TESTADO)
+// tweets periodically a tweet that failed before
 setInterval(reTweet, 1000 * 60);
 
-console.log(utils.timeStamp() + 'bot pronto!');
-// dispara ao capturar alguma mention
+
+
+// the bot is now ready
+logging.readyMsg();
+
+// triggers if  mentioned
 client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) {
     stream.on('data', function(tweet) {
         
-        // caso o user nao esteja em cooldown
+        // if the user is not on cooldown
         if(cooldownList.includes(tweet.user.name) == false) {
-
-            var followcount = tweet.user.followers_count;
 
             var trainercard = utils.makeTrainercard(tweet.user.screen_name);
 
@@ -70,29 +74,29 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
                     template:   376
                 */
 
-                // desenhando pokemon1
+                // drawing pokemon1
                 data[0].composite(data[1+trainercard.pokemon1], pokegridW, pokegridH);
 
-                // desenhando pokemon2
+                // drawing pokemon2
                 data[0].composite(data[1+trainercard.pokemon2], pokegridW + (offsetW), pokegridH);
 
-                // desenhando pokemon3
+                // drawing pokemon3
                 data[0].composite(data[1+trainercard.pokemon3], pokegridW + (offsetW*2), pokegridH);
 
-                // desenhando pokemon4
+                // drawing pokemon4
                 data[0].composite(data[1+trainercard.pokemon4], pokegridW, pokegridH + (offsetH));
 
-                // desenhando pokemon5
+                // drawing pokemon5
                 data[0].composite(data[1+trainercard.pokemon5], pokegridW + (offsetW), pokegridH + (offsetH));
 
-                // desenhando pokemon6
+                // drawing pokemon6
                 data[0].composite(data[1+trainercard.pokemon6], pokegridW + (offsetW*2), pokegridH + (offsetH));
 
 
-                // desenhando treinador
+                // drawing treinador
                 data[0].composite(data[269+trainercard.trainer], 260, 170);
 
-                // desenhando insigneas
+                // drawing insigneas
                 if(trainercard.region == 'Johto') {
                     regionoffset = 8;
                 }
@@ -103,7 +107,7 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
                     data[0].composite(data[253+i+regionoffset], horizontal + (i*offset), 380);
                 }
 
-                // escrevendo no cartao
+                // writing on the card
                 Jimp.loadFont('assets/pokedex.fnt').then(font => {
 
                     // -12
@@ -115,59 +119,59 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
                     card.print(font, 45, 158,   'MONEY: $' + trainercard.money);
                     card.print(font, 45, 190,   'POKéDEX: ' + trainercard.pokedex);
 
-                    // salvando cartao
+                    // saving card image
                     card.write('saved/' + trainercard.name + '.png', function() {
                         
-                        // resetando data[0]
+                        // reseting data[0]
                         data[0].composite(data[376], 0, 0);
 
-                        // upando cartao
+                        // uploading card image
                         var imagem = fs.readFileSync('saved/' + trainercard.name + '.png');
 
                         client.post('media/upload', {media: imagem}, function(error, imagem, response) {
                             if(!error) {
 
-                                //tuitando
+                                // tweeting
                                 var status = utils.makeTweet(tweet, imagem);
 
                                 client.post('statuses/update', status, function(error, tweeted, response) {
                                     if(!error) {
                                         successCount++;
-                                        utils.successMsg(tweet, successCount);
+                                        logging.successMsg(tweet, successCount);
                                         cooldownList.push(tweet.user.name);
                                     }
                                     if(error) {
                                         failCount++;
-                                        utils.failMsg(tweet, failCount);
-                                        console.log(error);
+                                        logging.failMsg(tweet, failCount);
+                                        logging.errorMsg(error);
                                         failedTweets.queue.push(status);
                                     }
                                 });
                             }
                             if(error) {
                                 failCount++;
-                                utils.failMsg(tweet, failCount);
-                                console.log(error);
+                                logging.failMsg(tweet, failCount);
+                                logging.errorMsg(error);
                             }
                         });
                     });
                 });
             })
         } else {
-            // caso o user esteja em cooldown
-            utils.cooldownMsg(tweet);
+            // if the user is on cooldown
+            logging.cooldownMsg(tweet);
         }
     });
     stream.on('error', function(error) {
         failCount++;
-        console.log(error);
+        logging.errorMsg(error);
     });
 });
 
 // carrega os assets
-function carregaAssets() {
+function loadAssets() {
 
-    console.log(utils.timeStamp() + 'carregando os assets...');
+    loadingAssetsMsg();
 
     // carregando cartao
     jimps.push(Jimp.read('assets/card.png'));
@@ -202,41 +206,40 @@ function reTweet() {
 	if(failedTweets.queue.length != 0) {
 		client.post('statuses/update', failedTweets.queue[0], function(error, tweet, response) {
 			if(!error) {
-				successCount++;
-				console.log(utils.timeStamp() + 'tweet antigo feito com sucesso (restam: ' + failedTweets.queue.length + ') (#' + successCount + ')');
+                successCount++;
+				logging.oldSuccessMsg(failedTweets.queue.length, successCount);
                 
-                // atualiza e salva failedTweets
+                // update and save failedTweets.json
                 failedTweets.queue.shift();
                 var failedTweetsStr = JSON.stringify(failedTweets);
-                fs.writeFile('failedTweets.json', failedTweetsStr, (error) => { if(error){console.log(utils.timeStamp() + error)} });
+                fs.writeFile('failedTweets.json', failedTweetsStr, (error) => { if(error){console.log(logging.timeStamp() + ' ' + error)} });
             }
             if(error) {
                 retries++;
-                console.log(error);                
-                console.log(utils.timeStamp() + 'tweet antigo falhou (restam: ' + failedTweets.queue.length + ') (#' + retries + ')');
+                logging.oldFailMsg(failedTweets.queue.length, retries);
+                logging.errorMsg(error);
                 var failedTweetsStr = JSON.stringify(failedTweets);
-                fs.writeFile('failedTweets.json', failedTweetsStr, (error) => { if(error){console.log(utils.timeStamp() + error)} });
+                fs.writeFile('failedTweets.json', failedTweetsStr, (error) => { if(error){console.log(logging.timeStamp() + ' ' +  error)} });
 			}
 		});
 	}
 }
 
-function carregaFailedTweets() {
+function loadFailedTweets() {
 
     fs.readFile('failedTweets.json', 'utf8', function (error, jsonString) {
         if(error) {
             fs.writeFile('failedTweets.json', '{"queue":[]}\n');
-            console.log(error);
-            return console.log(utils.timeStamp() + 'arquivo failedTweets.json criado e inicializado corretamente');            
+            return logging.initializedFileMsg();            
         }
         if(!error) {
             if(jsonString == ''){
-                // inicializa corretamente o arquivo
+                // initializing the failedTweets.json correctly
                 fs.writeFile('failedTweets.json', '{"queue":[]}\n');
-                console.log(utils.timeStamp() + 'tweets antigos carregados (0)');
+                logging.zeroTweetsLoadedMsg();
             } else {
                 failedTweets = JSON.parse(jsonString);
-                console.log(utils.timeStamp() + 'tweets antigos carregados (' + failedTweets.queue.length + ')');
+                logging.tweetsLoadedMsg(failedTweets.queue.length);
             }
         }
     })
