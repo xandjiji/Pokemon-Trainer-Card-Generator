@@ -208,14 +208,14 @@ function reTweet() {
                 // atualiza e salva failedTweets
                 failedTweets.queue.shift();
                 var failedTweetsStr = JSON.stringify(failedTweets);
-                fs.writeFile('failedTweets.json', failedTweetsStr);
+                fs.writeFile('failedTweets.json', failedTweetsStr, (error) => { if(error){console.log(utils.timeStamp() + error)} });
             }
             if(error) {
                 retries++;
                 console.log(error);                
                 console.log(utils.timeStamp() + 'tweet antigo falhou (restam: ' + failedTweets.queue.length + ') (#' + retries + ')');
                 var failedTweetsStr = JSON.stringify(failedTweets);
-                fs.writeFile('failedTweets.json', failedTweetsStr);
+                fs.writeFile('failedTweets.json', failedTweetsStr, (error) => { if(error){console.log(utils.timeStamp() + error)} });
 			}
 		});
 	}
