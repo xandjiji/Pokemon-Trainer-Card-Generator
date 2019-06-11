@@ -206,16 +206,17 @@ function reTweet() {
 	if(failedTweets.queue.length != 0) {
 		client.post('statuses/update', failedTweets.queue[0], function(error, tweet, response) {
 			if(!error) {
-                successCount++;
-				logging.oldSuccessMsg(failedTweets.queue.length, successCount);
-                
+                successCount++; 
+
                 // update and save failedTweets.json
                 failedTweets.queue.shift();
+                logging.oldSuccessMsg(failedTweets.queue.length, successCount);
                 var failedTweetsStr = JSON.stringify(failedTweets);
                 fs.writeFile('failedTweets.json', failedTweetsStr, (error) => { if(error){console.log(logging.timeStamp() + ' ' + error)} });
             }
             if(error) {
                 retries++;
+                
                 logging.oldFailMsg(failedTweets.queue.length, retries);
                 logging.errorMsg(error);
                 var failedTweetsStr = JSON.stringify(failedTweets);
