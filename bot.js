@@ -36,7 +36,7 @@ loadFailedTweets();
 let successCount = 0;
 let failCount = 0;
 let retries = 0;
-let cooldownMinutes = 10;
+let cooldownMinutes = 60;
 
 // reset the cooldown list every 10 minutes
 setInterval(resetCooldown, cooldownMinutes * 1000 * 60);
@@ -144,6 +144,7 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
                                         failCount++;
                                         logging.failMsg(tweet, failCount);
                                         logging.errorMsg(error);
+                                        cooldownList.push(tweet.user.name);
                                         failedTweets.queue.push(status);
                                     }
                                 });
