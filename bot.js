@@ -58,7 +58,7 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
     stream.on('data', function(tweet) {
         
         // if the user is not on cooldown
-        if(cooldownList.includes(tweet.user.name) == false) {
+        if(cooldownList.includes(tweet.user.screen_name) == false) {
 
             var trainercard = utils.makeTrainercard(tweet.user.screen_name);
 
@@ -138,13 +138,13 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
                                     if(!error) {
                                         successCount++;
                                         logging.successMsg(tweet, successCount);
-                                        cooldownList.push(tweet.user.name);
+                                        cooldownList.push(tweet.user.screen_name);
                                     }
                                     if(error) {
                                         failCount++;
                                         logging.failMsg(tweet, failCount);
                                         logging.errorMsg(error);
-                                        cooldownList.push(tweet.user.name);
+                                        cooldownList.push(tweet.user.screen_name);
                                         failedTweets.queue.push(status);
                                     }
                                 });
@@ -209,7 +209,10 @@ function reTweet() {
 			if(!error) {
                 successCount++; 
 
-                // update and save failedTweets.json
+                // update and save failedTweets.json and cooldownList
+                let screen_name = failedTweets.queue[0].status.substring(1, failedTweets.queue[0].status.indexOf(' '));
+                cooldownList.push(screen_name);
+                
                 failedTweets.queue.shift();
                 logging.oldSuccessMsg(failedTweets.queue.length, successCount);
                 var failedTweetsStr = JSON.stringify(failedTweets);
