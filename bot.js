@@ -36,7 +36,7 @@ loadFailedTweets();
 let successCount = 0;
 let failCount = 0;
 let retries = 0;
-let cooldownMinutes = 60;
+let cooldownMinutes = 240;
 
 // reset the cooldown list every 10 minutes
 setInterval(resetCooldown, cooldownMinutes * 1000 * 60);
