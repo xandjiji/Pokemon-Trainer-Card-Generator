@@ -219,6 +219,9 @@ function reTweet() {
                 fs.writeFile('failedTweets.json', failedTweetsStr, (error) => { if(error){console.log(logging.timeStamp() + ' ' + error)} });
             }
             if(error) {
+                if(error[0].code == 385){
+                    failedTweets.queue.shift();
+                }                
                 retries++;
                 
                 logging.oldFailMsg(failedTweets.queue.length, retries);
