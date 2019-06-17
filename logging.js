@@ -98,7 +98,7 @@ logging.failMsg = function failMsg(tweet, failCount, error) {
         `${logging.colors.fail}${logging.timeStamp()}` +
         `${logging.colors.screenName}@${tweet.user.screen_name}${logging.colors.reset} has failed. ` +
         `${logging.colors.followers}[${logging.numberFormat(tweet.user.followers_count)} followers]` +
-        `${logging.colors.control}[#${failCount}]${logging.colors.reset}` +
+        `${logging.colors.control}[#${failCount}]${logging.colors.reset} ` +
         `[${error[0].code}]`;
 
     return console.log(msg);
@@ -121,7 +121,7 @@ logging.oldFailMsg = function oldFailMsg(queueSize, retries, error) {
         `${logging.colors.fail}${logging.timeStamp()}` +
         `${logging.colors.reset}a tweet from the ${logging.colors.system}failedTweets.json${logging.colors.reset} file has failed. ` +
         `${logging.colors.system}[${queueSize} left]` +
-        `${logging.colors.control}[#${retries}]${logging.colors.reset}` +
+        `${logging.colors.control}[#${retries}]${logging.colors.reset} ` +
         `[${error[0].code}]`;
 
     return console.log(msg);
