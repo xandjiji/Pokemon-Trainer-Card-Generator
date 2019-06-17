@@ -119,9 +119,9 @@ logging.oldFailMsg = function oldFailMsg(queueSize, retries, error) {
     
     let msg =
         `${logging.colors.fail}${logging.timeStamp()}` +
-        `${logging.colors.reset}a tweet from the ${logging.colors.system}failedTweets.json${logging.colors.reset} file has failed.` +
+        `${logging.colors.reset}a tweet from the ${logging.colors.system}failedTweets.json${logging.colors.reset} file has failed. ` +
         `${logging.colors.system}[${queueSize} left]` +
-        `${logging.colors.control}[#${retries}]${logging.colors.reset} ` +
+        `${logging.colors.control}[#${retries}]${logging.colors.reset}` +
         `[${error[0].code}]`;
 
     return console.log(msg);
