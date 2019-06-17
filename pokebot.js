@@ -142,8 +142,8 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
                                     }
                                     if(error) {
                                         failCount++;
-                                        logging.failMsg(tweet, failCount);
-                                        logging.errorMsg(error);
+                                        logging.failMsg(tweet, failCount, error);
+                                        //logging.errorMsg(error);
                                         cooldownList.push(tweet.user.screen_name);
                                         failedTweets.queue.push(status);
                                     }
@@ -151,8 +151,8 @@ client.stream('statuses/filter', {track: '@PokeTrainerCard'},  function(stream) 
                             }
                             if(error) {
                                 failCount++;
-                                logging.failMsg(tweet, failCount);
-                                logging.errorMsg(error);
+                                logging.failMsg(tweet, failCount, error);
+                                //logging.errorMsg(error);
                             }
                         });
                     });
@@ -224,8 +224,8 @@ function reTweet() {
                 }                
                 retries++;
                 
-                logging.oldFailMsg(failedTweets.queue.length, retries);
-                logging.errorMsg(error);
+                logging.oldFailMsg(failedTweets.queue.length, retries, error);
+                //logging.errorMsg(error);
                 var failedTweetsStr = JSON.stringify(failedTweets);
                 fs.writeFile('failedTweets.json', failedTweetsStr, (error) => { if(error){console.log(logging.timeStamp() + ' ' +  error)} });
 			}

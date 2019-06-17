@@ -76,8 +76,7 @@ logging.readyMsg = function readyMsg() {
 logging.errorMsg = function errorMsg(error) {
 
     let msg =
-        `${logging.colors.fail}${logging.timeStamp()}${logging.colors.reset}` +
-        `┕> ${error[0].message}`;
+        `${logging.colors.fail}${logging.timeStamp()}${logging.colors.reset} [${error[0].code}]`;
 
     return console.log(msg);
 }
@@ -93,13 +92,14 @@ logging.successMsg = function successMsg(tweet, successCount) {
     return console.log(msg);
 }
 
-logging.failMsg = function failMsg(tweet, failCount) {
+logging.failMsg = function failMsg(tweet, failCount, error) {
     
     let msg =
         `${logging.colors.fail}${logging.timeStamp()}` +
         `${logging.colors.screenName}@${tweet.user.screen_name}${logging.colors.reset} has failed. ` +
         `${logging.colors.followers}[${logging.numberFormat(tweet.user.followers_count)} followers]` +
-        `${logging.colors.control}[#${failCount}]${logging.colors.reset}`;
+        `${logging.colors.control}[#${failCount}]${logging.colors.reset}` +
+        `[${error[0].code}]`;
 
     return console.log(msg);
 }
@@ -115,13 +115,14 @@ logging.oldSuccessMsg = function oldSuccessMsg(queueSize, successCount) {
     return console.log(msg);
 }
 
-logging.oldFailMsg = function oldFailMsg(queueSize, retries) {
+logging.oldFailMsg = function oldFailMsg(queueSize, retries, error) {
     
     let msg =
         `${logging.colors.fail}${logging.timeStamp()}` +
         `${logging.colors.reset}a tweet from the ${logging.colors.system}failedTweets.json${logging.colors.reset} file has failed. ` +
         `${logging.colors.system}[${queueSize} left]` +
-        `${logging.colors.control}[#${retries}]${logging.colors.reset}`;
+        `${logging.colors.control}[#${retries}]${logging.colors.reset}` +
+        `[${error[0].code}]`;
 
     return console.log(msg);
 }
