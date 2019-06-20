@@ -76,7 +76,7 @@ logging.readyMsg = function readyMsg() {
 logging.errorMsg = function errorMsg(error) {
 
     let msg =
-        `${logging.colors.fail}${logging.timeStamp()}${logging.colors.reset}${error[0].message} ` +
+        `${logging.colors.fail}${logging.timeStamp()}${logging.colors.reset} ` +
         `${logging.colors.fail}[${error[0].code}]${logging.colors.reset}`;
 
     return console.log(msg);
