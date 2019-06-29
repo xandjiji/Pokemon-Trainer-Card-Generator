@@ -77,7 +77,7 @@ logging.errorMsg = function errorMsg(error) {
 
     let msg =
         `${logging.colors.fail}${logging.timeStamp()}${logging.colors.reset} ` +
-        `${logging.colors.fail}[${error}]${logging.colors.reset}`;
+        `${logging.colors.fail}[${error[0]}]${logging.colors.reset}`;
 
     return console.log(msg);
 }
@@ -123,7 +123,7 @@ logging.oldFailMsg = function oldFailMsg(queueSize, retries, error) {
         `${logging.colors.reset}a tweet from the ${logging.colors.system}failedTweets.json${logging.colors.reset} file has failed. ` +
         `${logging.colors.system}[${queueSize} left]` +
         `${logging.colors.control}[#${retries}]${logging.colors.reset}` +
-        `${logging.colors.fail}[${error}]${logging.colors.reset}`;
+        `${logging.colors.fail}[${error[0]}]${logging.colors.reset}`;
 
     return console.log(msg);
 }
