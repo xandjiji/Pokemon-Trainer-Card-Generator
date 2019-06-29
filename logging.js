@@ -105,6 +105,18 @@ logging.failMsg = function failMsg(tweet, failCount, error) {
     return console.log(msg);
 }
 
+logging.failStreamMsg = function failMsg(tweet, failCount, error) {
+    
+    let msg =
+        `${logging.colors.fail}${logging.timeStamp()}` +
+        `${logging.colors.screenName}@${tweet.user.screen_name}${logging.colors.reset} has failed. ` +
+        `${logging.colors.followers}[${logging.numberFormat(tweet.user.followers_count)} followers]` +
+        `${logging.colors.control}[#${failCount}]${logging.colors.reset}` +
+        `${logging.colors.fail}[${error}]${logging.colors.reset}`;
+
+    return console.log(msg);
+}
+
 logging.oldSuccessMsg = function oldSuccessMsg(queueSize, successCount) {
     
     let msg =
