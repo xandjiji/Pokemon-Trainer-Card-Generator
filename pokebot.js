@@ -221,7 +221,10 @@ function reTweet() {
             if(error) {
                 if(error[0].code == 385){
                     failedTweets.queue.shift();
-                }                
+                }
+                if(error[0].code == 325){
+                    failedTweets.queue.shift();
+                }
                 retries++;
                 
                 logging.oldFailMsg(failedTweets.queue.length, retries, error);
