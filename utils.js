@@ -35,7 +35,7 @@ utils.makeTrainercard = function makeTrainercard(screen_name) {
         region:     utils.regions[  (parseInt('0x' + hash.substring(0, 4)) % 2)],
         hometown:   utils.cities[   (parseInt('0x' + hash.substring(0, 4)) % 20)],
         money:                      (parseInt('0x' + hash.substring(5, 9))),
-        pokedex:                    (parseInt('0x' + hash.substring(10, 14)) % 252),
+        pokedex:                    (parseInt('0x' + hash.substring(10, 14)) % 246) + 6,
         badges:                     (parseInt('0x' + hash.substring(15, 19)) % 9),
         trainer:                    (parseInt('0x' + hash.substring(20, 24)) % 107),
         pokemon1:                   (parseInt('0x' + hash.substring(25, 29)) % 252),
