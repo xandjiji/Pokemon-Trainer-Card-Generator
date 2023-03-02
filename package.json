@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/xandjiji/Pokemon-Trainer-Card-Generatort#readme",
   "dependencies": {
-    "jimp": "^0.6.0",
+    "jimp": "^0.22.7",
     "twitter": "^1.7.1"
   }
 }
