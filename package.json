@@ -5,6 +5,7 @@
   "repository": "git@github.com:xandjiji/Pokemon-Trainer-Card-Generator.git",
   "author": "xandjiji <xandjiji@gmail.com>",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",
     "dev": "tsx watch src/index.ts"
@@ -13,5 +14,9 @@
     "@types/node": "^18.15.3",
     "tsx": "^3.12.5",
     "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "twitter-api-v2": "^1.14.2"
   }
 }
