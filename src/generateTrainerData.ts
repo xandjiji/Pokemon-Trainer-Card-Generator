@@ -30,6 +30,7 @@ export const COUNT = {
   cities: CITIES.length,
   regions: REGIONS.length,
   badges: 8,
+  trainerPokemons: 6,
 };
 
 const sha256 = (input: string) =>
@@ -45,8 +46,11 @@ export const generateTrainerData = (username: string) => {
     region: REGIONS[parseHex(hash.substring(0, 4)) % COUNT.regions],
     hometown: CITIES[parseHex(hash.substring(0, 4)) % COUNT.cities],
     money: parseHex(hash.substring(5, 9)),
-    pokedex: (parseHex(hash.substring(10, 14)) % 246) + 6,
-    badges: (parseHex(hash.substring(15, 19)) % COUNT.badges) + 1,
+    pokedex:
+      (parseHex(hash.substring(10, 14)) %
+        (COUNT.pokemons - COUNT.trainerPokemons)) +
+      COUNT.trainerPokemons,
+    badges: parseHex(hash.substring(15, 19)) % (COUNT.badges + 1),
     trainer: parseHex(hash.substring(20, 24)) % COUNT.trainers,
     pokemons: [
       parseHex(hash.substring(25, 29)) % COUNT.pokemons,
