@@ -29,7 +29,14 @@ const generateTrainerCard = async (username: string) => {
 
   console.log("ok!");
   const img = await jimp.read("assets/card.png");
-  img.composite(getAsset.pokemon(32), 0, 0);
+
+  trainerData.pokemons.forEach((pokemonId, idx) => {
+    img.composite(
+      getAsset.pokemon(pokemonId),
+      28 + 84 * (idx % 3),
+      222 + (idx > 2 ? 68 : 0)
+    );
+  });
 
   await img.writeAsync("saved/card.png");
 };

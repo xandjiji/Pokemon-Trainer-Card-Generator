@@ -48,12 +48,14 @@ export const generateTrainerData = (username: string) => {
     pokedex: (parseHex(hash.substring(10, 14)) % 246) + 6,
     badges: (parseHex(hash.substring(15, 19)) % COUNT.badges) + 1,
     trainer: parseHex(hash.substring(20, 24)) % COUNT.trainers,
-    pokemon1: parseHex(hash.substring(25, 29)) % COUNT.pokemons,
-    pokemon2: parseHex(hash.substring(30, 34)) % COUNT.pokemons,
-    pokemon3: parseHex(hash.substring(35, 39)) % COUNT.pokemons,
-    pokemon4: parseHex(hash.substring(40, 44)) % COUNT.pokemons,
-    pokemon5: parseHex(hash.substring(45, 49)) % COUNT.pokemons,
-    pokemon6: parseHex(hash.substring(50, 54)) % COUNT.pokemons,
+    pokemons: [
+      parseHex(hash.substring(25, 29)) % COUNT.pokemons,
+      parseHex(hash.substring(30, 34)) % COUNT.pokemons,
+      parseHex(hash.substring(35, 39)) % COUNT.pokemons,
+      parseHex(hash.substring(40, 44)) % COUNT.pokemons,
+      parseHex(hash.substring(45, 49)) % COUNT.pokemons,
+      parseHex(hash.substring(50, 54)) % COUNT.pokemons,
+    ],
     id: parseHex(hash.substring(55, 59)),
   };
 };
