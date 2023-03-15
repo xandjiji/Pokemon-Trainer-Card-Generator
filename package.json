@@ -8,7 +8,8 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "draw": "tsx watch src/generateTrainerCard.ts"
   },
   "devDependencies": {
     "@types/node": "^18.15.3",
@@ -17,6 +18,7 @@
   },
   "dependencies": {
     "dotenv": "^16.0.3",
+    "jimp": "^0.22.7",
     "twitter-api-v2": "^1.14.2"
   }
 }
