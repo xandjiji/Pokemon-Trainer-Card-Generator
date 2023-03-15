@@ -1,5 +1,6 @@
 import { ETwitterStreamEvent } from "twitter-api-v2";
 import { client } from "./client";
+import { generateTrainerData } from "./generateTrainerData";
 
 const BOT_USERNAME = "PokeTrainerCard";
 
