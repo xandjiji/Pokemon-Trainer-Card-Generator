@@ -1,5 +1,5 @@
 import { createHash } from "crypto";
-const REGIONS = ["Kanto", "Johto"];
+const REGIONS = ["Kanto", "Johto"] as const;
 
 const CITIES = [
   "Celadon City",
@@ -22,7 +22,7 @@ const CITIES = [
   "Olivine City",
   "Viridian City",
   "Violet City",
-];
+] as const;
 
 export const COUNT = {
   pokemons: 252,

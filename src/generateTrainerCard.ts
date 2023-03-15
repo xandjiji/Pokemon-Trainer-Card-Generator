@@ -30,11 +30,24 @@ const generateTrainerCard = async (username: string) => {
   console.log("ok!");
   const img = await jimp.read("assets/card.png");
 
+  console.log(trainerData);
+
   trainerData.pokemons.forEach((pokemonId, idx) => {
     img.composite(
       getAsset.pokemon(pokemonId),
       28 + 84 * (idx % 3),
       222 + (idx > 2 ? 68 : 0)
+    );
+  });
+
+  img.composite(getAsset.trainer(trainerData.trainer), 260, 170);
+
+  const badgeIdxOffset = trainerData.region === "Kanto" ? 0 : 8;
+  Array.from({ length: trainerData.badges }, (_, badgeIdx) => {
+    img.composite(
+      getAsset.badge(badgeIdxOffset + badgeIdx),
+      52 + 48 * badgeIdx,
+      380
     );
   });
 
