@@ -29,9 +29,9 @@ stream.on(ETwitterStreamEvent.Data, async (tweet) => {
 
     broadcast(
       `Trainer card delivered to ${coloredText(
-        `@${username} (${coloredText(tweetCount.toString(), "system")} so far)`,
+        `@${username}`,
         "highlight"
-      )}`,
+      )} (${coloredText(tweetCount.toString(), "system")} so far)`,
       "success"
     );
   } catch (error) {
