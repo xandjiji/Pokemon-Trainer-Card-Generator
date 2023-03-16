@@ -6,6 +6,7 @@ import { broadcast, coloredText } from "./logger";
 import { TweetData, cooldown, tweetQueue } from "./queue";
 
 const BOT_USERNAME = "PokeTrainerCard";
+let tweetCount = 0;
 
 const replyWithTrainerCard = async ({ tweetId, username }: TweetData) => {
   const filePath = await generateTrainerCard(username);
@@ -55,8 +56,12 @@ stream.on(ETwitterStreamEvent.Data, async (tweet) => {
     );
     cooldown.add(username);
 
+    tweetCount += 1;
     broadcast(
-      `Trainer card delivered to ${coloredText(`@${username}`, "highlight")}`,
+      `Trainer card delivered to ${coloredText(
+        `@${username} (${coloredText(tweetCount.toString(), "system")} so far)`,
+        "highlight"
+      )}`,
       "success"
     );
   } catch (error) {
@@ -76,10 +81,14 @@ setInterval(() => {
         `Trainer card delivered to ${coloredText(
           `@${retryTweet.username}`,
           "highlight"
-        )}`,
+        )} (${coloredText(
+          tweetQueue.failedTweets.length.toString(),
+          "system"
+        )} left)`,
         "success"
       );
 
+      tweetCount += 1;
       await tweetQueue.remove(retryTweet.tweetId);
     })
     .catch(() => {});
