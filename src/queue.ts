@@ -44,7 +44,7 @@ export const tweetQueue = {
   },
   remove: async (tweetId: TweetData["tweetId"]) => {
     failedTweets = failedTweets.filter(
-      (failedTweet) => tweetId === failedTweet.tweetId
+      (failedTweet) => tweetId !== failedTweet.tweetId
     );
     await saveQueue();
   },

@@ -50,9 +50,9 @@ stream.on(ETwitterStreamEvent.Data, async (tweet) => {
     if (cooldown.checkUser(username)) return;
 
     const tweedData = { tweetId: tweet.data.id, username };
-    await replyWithTrainerCard(tweedData).catch(() => {
-      tweetQueue.add(tweedData);
-    });
+    await replyWithTrainerCard(tweedData).catch(() =>
+      tweetQueue.add(tweedData)
+    );
     cooldown.add(username);
 
     broadcast(
@@ -71,7 +71,7 @@ setInterval(() => {
   if (!retryTweet) return;
 
   replyWithTrainerCard(retryTweet)
-    .then(() => {
+    .then(async () => {
       broadcast(
         `Trainer card delivered to ${coloredText(
           `@${retryTweet.username}`,
@@ -80,7 +80,7 @@ setInterval(() => {
         "success"
       );
 
-      tweetQueue.remove(retryTweet.tweetId);
+      await tweetQueue.remove(retryTweet.tweetId);
     })
     .catch(() => {});
 }, tweetQueue.TWEET_QUEUE_TIME);
