@@ -3,6 +3,7 @@ import fs from "fs/promises";
 import { client } from "./client";
 import { generateTrainerCard } from "./generateTrainerCard";
 import { broadcast, coloredText } from "./logger";
+import { cooldown } from "./queue";
 
 const BOT_USERNAME = "PokeTrainerCard";
 
@@ -35,6 +36,7 @@ stream.on(ETwitterStreamEvent.Data, async (tweet) => {
 
     const [{ username }] = tweet.includes?.users ?? [];
     if (username === BOT_USERNAME) return;
+    if (cooldown.checkUser(username)) return;
 
     const filePath = await generateTrainerCard(username);
     const mediaId = await client.user.v1.uploadMedia(filePath);
