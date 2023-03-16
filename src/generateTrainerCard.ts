@@ -1,5 +1,5 @@
 import jimp from "jimp";
-import { COUNT, generateTrainerData } from "./generateTrainerData";
+import { COUNT, generateTrainerData, Region } from "./generateTrainerData";
 
 const loadAll = (resolver: (idx: number) => string, length: number) =>
   Promise.all(Array.from({ length }, (_, idx) => jimp.read(resolver(idx))));
@@ -17,7 +17,8 @@ const assetLoader = async () => {
 
   return {
     pokemon: (idx: number) => pokemons[idx],
-    badge: (idx: number) => badges[idx],
+    badge: (idx: number, region: Region) =>
+      badges[idx + (region === "Kanto" ? 0 : 8)],
     trainer: (idx: number) => trainers[idx],
   };
 };
@@ -42,10 +43,9 @@ const generateTrainerCard = async (username: string) => {
 
   img.composite(getAsset.trainer(trainerData.trainer), 260, 170);
 
-  const badgeIdxOffset = trainerData.region === "Kanto" ? 0 : 8;
   Array.from({ length: trainerData.badges }, (_, badgeIdx) => {
     img.composite(
-      getAsset.badge(badgeIdxOffset + badgeIdx),
+      getAsset.badge(badgeIdx, trainerData.region),
       52 + 48 * badgeIdx,
       380
     );

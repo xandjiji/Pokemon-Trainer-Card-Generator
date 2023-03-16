@@ -1,6 +1,8 @@
 import { createHash } from "crypto";
 const REGIONS = ["Kanto", "Johto"] as const;
 
+export type Region = typeof REGIONS[number]
+
 const CITIES = [
   "Celadon City",
   "Azalea Town",
