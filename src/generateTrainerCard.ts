@@ -1,5 +1,6 @@
 import jimp from "jimp";
 import { COUNT, generateTrainerData, Region } from "./generateTrainerData";
+import { broadcast } from "./logger";
 
 const ASSETS_DIR = "assets";
 
@@ -7,7 +8,7 @@ const loadAll = (resolver: (idx: number) => string, length: number) =>
   Promise.all(Array.from({ length }, (_, idx) => jimp.read(resolver(idx))));
 
 const assetLoader = async () => {
-  console.log("loading assets...");
+  broadcast("Loading assets...", "system");
   const [pokemons, kantoBadges, johtoBadges, trainers, font] =
     await Promise.all([
       loadAll((idx) => `${ASSETS_DIR}/pokemons/${idx}.png`, COUNT.pokemons),

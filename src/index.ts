@@ -1,7 +1,8 @@
 import { ETwitterStreamEvent } from "twitter-api-v2";
+import fs from "fs/promises";
 import { client } from "./client";
 import { generateTrainerCard } from "./generateTrainerCard";
-import fs from "fs/promises";
+import { broadcast } from "./logger";
 
 const BOT_USERNAME = "PokeTrainerCard";
 
@@ -23,23 +24,31 @@ const stream = await client.app.v2.searchStream({
 
 stream.autoReconnect = true;
 
-console.log("streaming tweets...");
+broadcast("Streaming tweets...", "highlight");
+
 stream.on(ETwitterStreamEvent.Data, async (tweet) => {
-  const isRetweet = !!tweet.data.referenced_tweets?.some(
-    (tweet) => tweet.type === "retweeted"
-  );
+  try {
+    const isRetweet = !!tweet.data.referenced_tweets?.some(
+      (tweet) => tweet.type === "retweeted"
+    );
 
-  if (isRetweet) return;
+    if (isRetweet) return;
 
-  const [{ username }] = tweet.includes?.users ?? [];
-  if (username === BOT_USERNAME) return;
+    const [{ username }] = tweet.includes?.users ?? [];
+    if (username === BOT_USERNAME) return;
 
-  const filePath = await generateTrainerCard(username);
-  const mediaId = await client.user.v1.uploadMedia(filePath);
+    const filePath = await generateTrainerCard(username);
+    const mediaId = await client.user.v1.uploadMedia(filePath);
 
-  await client.user.v2.reply("", tweet.data.id, {
-    media: { media_ids: [mediaId] },
-  });
+    await client.user.v2.reply("", tweet.data.id, {
+      media: { media_ids: [mediaId] },
+    });
 
-  await fs.unlink(filePath);
+    await fs.unlink(filePath);
+
+    broadcast(`Trainer card delivered to @${username}`, "success");
+  } catch (error) {
+    broadcast(`Oops! Something went wrong`, "fail");
+    console.log(error);
+  }
 });
