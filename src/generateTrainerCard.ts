@@ -31,13 +31,10 @@ const assetLoader = async () => {
 const getAsset = await assetLoader();
 const { font } = getAsset;
 
-const generateTrainerCard = async (username: string) => {
+export const generateTrainerCard = async (username: string) => {
   const trainerData = generateTrainerData(username);
 
-  console.log("ok!");
   const img = await jimp.read(`${ASSETS_DIR}/card.png`);
-
-  console.log(trainerData);
 
   trainerData.pokemons.forEach((pokemonId, idx) => {
     img.composite(
@@ -63,7 +60,7 @@ const generateTrainerCard = async (username: string) => {
   img.print(font, 45, 158, `MONEY: $${trainerData.money}`);
   img.print(font, 45, 190, `POKéDEX: ${trainerData.pokedex}`);
 
-  await img.writeAsync(`saved/${trainerData.name}.png`);
+  const filePath = `saved/${trainerData.name}.png`;
+  await img.writeAsync(filePath);
+  return filePath;
 };
-
-generateTrainerCard("fefa");

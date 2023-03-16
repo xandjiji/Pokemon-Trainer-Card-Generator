@@ -1,6 +1,7 @@
 import { ETwitterStreamEvent } from "twitter-api-v2";
 import { client } from "./client";
-import { generateTrainerData } from "./generateTrainerData";
+import { generateTrainerCard } from "./generateTrainerCard";
+import fs from "fs/promises";
 
 const BOT_USERNAME = "PokeTrainerCard";
 
@@ -22,6 +23,7 @@ const stream = await client.app.v2.searchStream({
 
 stream.autoReconnect = true;
 
+console.log("streaming tweets...");
 stream.on(ETwitterStreamEvent.Data, async (tweet) => {
   const isRetweet = !!tweet.data.referenced_tweets?.some(
     (tweet) => tweet.type === "retweeted"
@@ -32,5 +34,12 @@ stream.on(ETwitterStreamEvent.Data, async (tweet) => {
   const [{ username }] = tweet.includes?.users ?? [];
   if (username === BOT_USERNAME) return;
 
-  await client.user.v2.reply("pong", tweet.data.id);
+  const filePath = await generateTrainerCard(username);
+  const mediaId = await client.user.v1.uploadMedia(filePath);
+
+  await client.user.v2.reply("", tweet.data.id, {
+    media: { media_ids: [mediaId] },
+  });
+
+  await fs.unlink(filePath);
 });

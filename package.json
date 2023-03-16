@@ -8,8 +8,7 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",
-    "dev": "tsx watch src/index.ts",
-    "draw": "tsx watch src/generateTrainerCard.ts"
+    "dev": "tsx watch src/index.ts"
   },
   "devDependencies": {
     "@types/node": "^18.15.3",
