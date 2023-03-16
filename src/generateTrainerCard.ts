@@ -1,17 +1,21 @@
 import jimp from "jimp";
 import { COUNT, generateTrainerData, Region } from "./generateTrainerData";
 
+const ASSETS_DIR = "assets";
+
 const loadAll = (resolver: (idx: number) => string, length: number) =>
   Promise.all(Array.from({ length }, (_, idx) => jimp.read(resolver(idx))));
 
 const assetLoader = async () => {
   console.log("loading assets...");
-  const [pokemons, kantoBadges, johtoBadges, trainers] = await Promise.all([
-    loadAll((idx) => `assets/pokemons/${idx}.png`, COUNT.pokemons),
-    loadAll((idx) => `assets/badges/kanto/${idx}.png`, COUNT.badges),
-    loadAll((idx) => `assets/badges/johto/${idx}.png`, COUNT.badges),
-    loadAll((idx) => `assets/trainers/${idx}.png`, COUNT.trainers),
-  ]);
+  const [pokemons, kantoBadges, johtoBadges, trainers, font] =
+    await Promise.all([
+      loadAll((idx) => `${ASSETS_DIR}/pokemons/${idx}.png`, COUNT.pokemons),
+      loadAll((idx) => `${ASSETS_DIR}/badges/kanto/${idx}.png`, COUNT.badges),
+      loadAll((idx) => `${ASSETS_DIR}/badges/johto/${idx}.png`, COUNT.badges),
+      loadAll((idx) => `${ASSETS_DIR}/trainers/${idx}.png`, COUNT.trainers),
+      jimp.loadFont(`${ASSETS_DIR}/pokedex.fnt`),
+    ]);
 
   const badges = [...kantoBadges, ...johtoBadges];
 
@@ -20,16 +24,18 @@ const assetLoader = async () => {
     badge: (idx: number, region: Region) =>
       badges[idx + (region === "Kanto" ? 0 : 8)],
     trainer: (idx: number) => trainers[idx],
+    font,
   };
 };
 
 const getAsset = await assetLoader();
+const { font } = getAsset;
 
 const generateTrainerCard = async (username: string) => {
   const trainerData = generateTrainerData(username);
 
   console.log("ok!");
-  const img = await jimp.read("assets/card.png");
+  const img = await jimp.read(`${ASSETS_DIR}/card.png`);
 
   console.log(trainerData);
 
@@ -51,7 +57,13 @@ const generateTrainerCard = async (username: string) => {
     );
   });
 
+  img.print(font, 263, 30, `IDNo. ${trainerData.id}`);
+  img.print(font, 45, 72, `NAME: ${trainerData.name}`);
+  img.print(font, 45, 126, `${trainerData.hometown} (${trainerData.region})`);
+  img.print(font, 45, 158, `MONEY: $${trainerData.money}`);
+  img.print(font, 45, 190, `POKéDEX: ${trainerData.pokedex}`);
+
   await img.writeAsync("saved/card.png");
 };
 
-generateTrainerCard("xandxandxand");
+generateTrainerCard("fefa");
