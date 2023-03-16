@@ -10,7 +10,7 @@ const colors = {
 
 type ColorKey = keyof typeof colors;
 
-const coloredText = (text: string | number, color: ColorKey): string =>
+export const coloredText = (text: string | number, color: ColorKey): string =>
   `${colors[color]}${text}${colors.reset}`;
 
 const brackets = (

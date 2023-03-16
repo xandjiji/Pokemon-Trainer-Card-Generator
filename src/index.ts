@@ -2,7 +2,7 @@ import { ETwitterStreamEvent } from "twitter-api-v2";
 import fs from "fs/promises";
 import { client } from "./client";
 import { generateTrainerCard } from "./generateTrainerCard";
-import { broadcast } from "./logger";
+import { broadcast, coloredText } from "./logger";
 
 const BOT_USERNAME = "PokeTrainerCard";
 
@@ -25,7 +25,6 @@ const stream = await client.app.v2.searchStream({
 stream.autoReconnect = true;
 
 broadcast("Streaming tweets...", "highlight");
-
 stream.on(ETwitterStreamEvent.Data, async (tweet) => {
   try {
     const isRetweet = !!tweet.data.referenced_tweets?.some(
@@ -46,7 +45,10 @@ stream.on(ETwitterStreamEvent.Data, async (tweet) => {
 
     await fs.unlink(filePath);
 
-    broadcast(`Trainer card delivered to @${username}`, "success");
+    broadcast(
+      `Trainer card delivered to ${coloredText(`@${username}`, "highlight")}`,
+      "success"
+    );
   } catch (error) {
     broadcast(`Oops! Something went wrong`, "fail");
     console.log(error);
