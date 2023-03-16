@@ -63,7 +63,7 @@ const generateTrainerCard = async (username: string) => {
   img.print(font, 45, 158, `MONEY: $${trainerData.money}`);
   img.print(font, 45, 190, `POKéDEX: ${trainerData.pokedex}`);
 
-  await img.writeAsync("saved/card.png");
+  await img.writeAsync(`saved/${trainerData.name}.png`);
 };
 
 generateTrainerCard("fefa");
