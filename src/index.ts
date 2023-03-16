@@ -3,17 +3,11 @@ import fs from "fs/promises";
 import { client } from "./client";
 import { generateTrainerCard } from "./generateTrainerCard";
 import { broadcast, coloredText } from "./logger";
-import { cooldown } from "./queue";
+import { TweetData, cooldown, tweetQueue } from "./queue";
 
 const BOT_USERNAME = "PokeTrainerCard";
 
-const replyWithTrainerCard = async ({
-  tweetId,
-  username,
-}: {
-  username: string;
-  tweetId: string;
-}) => {
+const replyWithTrainerCard = async ({ tweetId, username }: TweetData) => {
   const filePath = await generateTrainerCard(username);
   const mediaId = await client.user.v1.uploadMedia(filePath);
 
@@ -55,7 +49,11 @@ stream.on(ETwitterStreamEvent.Data, async (tweet) => {
     if (username === BOT_USERNAME) return;
     if (cooldown.checkUser(username)) return;
 
-    await replyWithTrainerCard({ tweetId: tweet.data.id, username });
+    const tweedData = { tweetId: tweet.data.id, username };
+    await replyWithTrainerCard(tweedData).catch(() => {
+      tweetQueue.add(tweedData);
+    });
+    cooldown.add(username);
 
     broadcast(
       `Trainer card delivered to ${coloredText(`@${username}`, "highlight")}`,
@@ -66,3 +64,23 @@ stream.on(ETwitterStreamEvent.Data, async (tweet) => {
     console.log(error);
   }
 });
+
+setInterval(() => {
+  const retryTweet = tweetQueue.getFirst();
+
+  if (!retryTweet) return;
+
+  replyWithTrainerCard(retryTweet)
+    .then(() => {
+      broadcast(
+        `Trainer card delivered to ${coloredText(
+          `@${retryTweet.username}`,
+          "highlight"
+        )}`,
+        "success"
+      );
+
+      tweetQueue.remove(retryTweet.tweetId);
+    })
+    .catch(() => {});
+}, tweetQueue.TWEET_QUEUE_TIME);
