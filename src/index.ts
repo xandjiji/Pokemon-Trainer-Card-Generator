@@ -7,6 +7,23 @@ import { cooldown } from "./queue";
 
 const BOT_USERNAME = "PokeTrainerCard";
 
+const replyWithTrainerCard = async ({
+  tweetId,
+  username,
+}: {
+  username: string;
+  tweetId: string;
+}) => {
+  const filePath = await generateTrainerCard(username);
+  const mediaId = await client.user.v1.uploadMedia(filePath);
+
+  await client.user.v2.reply("", tweetId, {
+    media: { media_ids: [mediaId] },
+  });
+
+  await fs.unlink(filePath);
+};
+
 const rules = await client.app.v2.streamRules();
 
 if (rules.data?.length) {
@@ -38,14 +55,7 @@ stream.on(ETwitterStreamEvent.Data, async (tweet) => {
     if (username === BOT_USERNAME) return;
     if (cooldown.checkUser(username)) return;
 
-    const filePath = await generateTrainerCard(username);
-    const mediaId = await client.user.v1.uploadMedia(filePath);
-
-    await client.user.v2.reply("", tweet.data.id, {
-      media: { media_ids: [mediaId] },
-    });
-
-    await fs.unlink(filePath);
+    await replyWithTrainerCard({ tweetId: tweet.data.id, username });
 
     broadcast(
       `Trainer card delivered to ${coloredText(`@${username}`, "highlight")}`,
